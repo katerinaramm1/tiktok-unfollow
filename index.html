@@ -5,8 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TikTok Unfollow Check</title>
 <meta name="description" content="Find who you follow on TikTok that does not follow you back. Upload your own TikTok data file; everything stays in your browser.">
-<!-- ANALYTICS: paste the analytics tag here once the tool is chosen (leave empty until then). Update the privacy section below at the same time. -->
-
+<meta property="og:type" content="website">
+<meta property="og:title" content="TikTok Unfollow Check">
+<meta property="og:description" content="Find who you follow on TikTok that does not follow you back. Free, and your file stays on your device.">
+<meta property="og:url" content="https://katerinaramm1.github.io/tiktok-unfollow/">
+<meta property="og:image" content="https://katerinaramm1.github.io/tiktok-unfollow/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TikTok Unfollow Check: see who does not follow you back. Free, and your file stays on your device.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TikTok Unfollow Check">
+<meta name="twitter:description" content="Find who you follow on TikTok that does not follow you back. Free, and your file stays on your device.">
+<meta name="twitter:image" content="https://katerinaramm1.github.io/tiktok-unfollow/preview.png">
+<!-- ANALYTICS: Umami (added 27 Oct 2026). If this tag changes, update the "Visit counting" line in the privacy section too. -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="4b76d123-1d1c-4a75-badf-9d4c456ce74b"></script>
 <style>
 :root{--bg:#fafafa;--card:#fff;--text:#161823;--muted:#5b5f6b;--line:#e4e5e9;--accent:#fe2c55;--accent2:#25f4ee;--ok:#117a4d;--warn:#8a5a00;--warnbg:#fff4d6;--btn:#161823;--btntext:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#121318;--card:#1b1d25;--text:#f1f1f3;--muted:#a3a7b3;--line:#2c2f3a;--accent:#ff4d73;--ok:#4cd694;--warn:#f1c66a;--warnbg:#3a2f12;--btn:#f1f1f3;--btntext:#121318}}
@@ -43,12 +55,18 @@ ul.list .who{min-width:0;overflow-wrap:anywhere}
 ul.list .who small{display:block;color:var(--muted)}
 ul.list li.done .who strong{text-decoration:line-through;color:var(--muted)}
 ul.list li.aside{opacity:.6}
+ul.list li.resume{box-shadow:inset 4px 0 0 var(--accent);padding-left:12px}
 .actions{display:flex;gap:6px;flex-shrink:0}
 .confirm{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;margin:8px 0}
 details summary{cursor:pointer;font-weight:600}
+details.card>summary{font-size:1.15rem}
+details.card[open]>summary{margin-bottom:8px}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--line)}
 footer{margin-top:28px;font-size:.92rem;color:var(--muted)}
 footer a{color:inherit}
+.pager{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:10px}
+.shareprev{width:100%;max-width:420px;height:auto;border-radius:12px;border:1px solid var(--line);display:block;margin:10px 0}
+label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .hidden{display:none!important}
 </style>
 </head>
@@ -62,7 +80,7 @@ footer a{color:inherit}
 <h2>1. Get your data from TikTok</h2>
 <ol>
 <li>In the TikTok app: Profile → menu (☰) → <b>Settings and privacy</b> → <b>Account</b> → <b>Download your data</b>.</li>
-<li>Choose <b>Select data to download</b> (or "custom") and tick the <b>followers</b> and <b>following</b> lists. Choose the <b>JSON</b> file format.</li>
+<li>Choose <b>Select data to download</b> and tick only <b>Profile and Settings</b>. You do not need "Your Activity": it is much bigger and holds your watch history. Choose the <b>JSON</b> file format.</li>
 <li>Tap <b>Request data</b>. TikTok prepares it in the background; it can take from a few hours to a few days.</li>
 <li>When it is ready, go back to the same screen, tap <b>Download</b>, and save the file (a zip).</li>
 </ol>
@@ -85,10 +103,23 @@ footer a{color:inherit}
 
 <section id="results" class="hidden" aria-live="polite">
 <div class="stats" id="stats"></div>
-<div id="capnote" class="notice hidden">TikTok seems to cut the follower list in its export at about 10,000 accounts. If you have more followers than that, some people shown as "not following back" may actually follow you.</div>
+<div class="notice" id="datanote">
+<p><b>These numbers can differ from what you see in TikTok.</b> The file is a copy made at one moment, and TikTok may leave some people out of it. This can happen with any account, and most often when you have more than 10,000 followers, so the followers and "Fans" lists can be incomplete, and a few people shown as "not following back" may actually follow you.</p>
+<p>Compare the counts above with your TikTok profile. If they look far apart, request a new export after some time and upload it again; if you upload both files together, the page merges them. Before you unfollow someone, you can open their profile to check.</p>
+</div>
+<div id="capnote" class="notice hidden">Your file has close to 10,000 followers, which is where TikTok is reported to cut the list in its export. If your profile shows more followers than that, the list is incomplete.</div>
 <div class="card">
+<div class="notice" id="limitnote" role="note">
+<p><b>Attention: respect TikTok's limits.</b> TikTok limits how many accounts you can follow or unfollow in a short time. If you go too fast, it may warn you or block the action.</p>
+<ul>
+<li>Take breaks between unfollows, and between your sessions with this page. Do not use it for hours in a row.</li>
+<li>Work in small batches, and stop for the day if TikTok shows a warning.</li>
+<li>This page never unfollows for you. You unfollow yourself in TikTok, at your own pace.</li>
+</ul>
+</div>
 <div class="tabs" role="group" aria-label="Lists">
 <button type="button" data-tab="notBack" aria-pressed="true">Not following back</button>
+<button type="button" data-tab="aside" aria-pressed="false">Set aside</button>
 <button type="button" data-tab="mutuals" aria-pressed="false">Mutuals</button>
 <button type="button" data-tab="fans" aria-pressed="false">Fans (you do not follow)</button>
 </div>
@@ -101,18 +132,50 @@ footer a{color:inherit}
 <option value="6">Followed over 6 months ago</option>
 <option value="12">Followed over 1 year ago</option>
 </select>
+<select id="pagesize" aria-label="Profiles per page">
+<option value="25">25 per page</option>
+<option value="50">50 per page</option>
+<option value="100">100 per page</option>
+<option value="500">500 per page</option>
+</select>
 <button type="button" id="csv">Download CSV</button>
 </div>
 <div class="progress" id="progress"></div>
-<div class="row"><button type="button" id="reset">Reset progress</button></div>
+<p class="muted" id="resumenote" role="status"></p>
+<div class="row"><button type="button" id="resume" class="hidden">Go to where I stopped</button><button type="button" id="reset">Reset progress</button></div>
 <div id="resetconfirm" class="confirm hidden">
-<p>This deletes the list of profiles you opened from this browser. It cannot be undone.</p>
+<p>This deletes the list of profiles you opened and set aside from this browser. It cannot be undone.</p>
 <div class="row"><button type="button" id="resetyes" class="primary">Yes, reset</button><button type="button" id="resetno">Cancel</button></div>
 </div>
 <ul class="list" id="list"></ul>
-<div class="row"><button type="button" id="more" class="hidden">Show more</button></div>
+<div class="pager" id="pager">
+<button type="button" id="prev">Previous</button>
+<span id="pageinfo" class="muted"></span>
+<button type="button" id="next">Next</button>
+</div>
 <p class="muted" id="hint"></p>
 </div>
+
+<section class="card" id="share">
+<h2>Share your result</h2>
+<p class="muted">The picture uses numbers only. It has no usernames. It is made in your browser.</p>
+<label class="inline">Size
+<select id="sharesize" aria-label="Picture size">
+<option value="1350">Post (1080 × 1350)</option>
+<option value="1920">Story / TikTok photo (1080 × 1920)</option>
+</select>
+</label>
+<canvas id="sharecanvas" class="shareprev" width="1080" height="1350" role="img" aria-label="Preview of the picture you can share"></canvas>
+<div id="sharenote" class="notice hidden">This is made-up example data, so saving and sharing are switched off.</div>
+<div class="row">
+<button type="button" id="saveimg" class="primary">Save image</button>
+<button type="button" id="shareimg">Share…</button>
+<a class="btn" id="postx" href="#" target="_blank" rel="noopener">Post on X</a>
+<button type="button" id="copytext">Copy text</button>
+<span id="sharemsg" class="muted" role="status"></span>
+</div>
+<p class="muted">X cannot attach the picture for you: save it, then add it to your post. On TikTok, add it as a photo post. "Share…" works on phones that support it.</p>
+</section>
 
 <details class="card" id="files">
 <summary>Your files (check that everything was read)</summary>
@@ -122,19 +185,20 @@ footer a{color:inherit}
 </details>
 </section>
 
-<section class="card" id="privacy">
-<h2>Privacy</h2>
+<details class="card" id="privacy">
+<summary>Privacy policy (click to read)</summary>
 <p class="muted">Last updated 27 October 2026.</p>
 <ul>
 <li><b>Your file stays on your device.</b> The page reads it in your browser. Nothing is uploaded to a server.</li>
 <li><b>What is read:</b> the usernames (and the follow dates, if present) in your followers and following lists. Nothing else in the file is used.</li>
-<li><b>What is stored:</b> the page keeps a list of the profiles you opened or set aside, with the time, in your browser only. It is never sent anywhere. "Reset progress" deletes it, and so does clearing the site data of your browser. It is not shared between your phone and your computer.</li>
-<li><b>Visit counting:</b> <!--PRIVACY_ANALYTICS-->no visit counter is used yet. When one is added, this line will name it and say what it counts.</li>
+<li><b>What is stored:</b> the page keeps a list of the profiles you opened or set aside, with the time (so the page can reopen where you stopped), and your choice of profiles per page, in your browser only. The page does not keep your file, so you upload it again each time. It is never sent anywhere. "Reset progress" deletes it, and so does clearing the site data of your browser. It is not shared between your phone and your computer.</li>
+<li><b>Share picture:</b> it is drawn in your browser from four numbers (follow-back rate, following, mutuals, not following back) and the site address. Nothing is uploaded. "Post on X" opens X's own page with a message that you can edit.</li>
+<li><b>Visit counting:</b> this page uses <a href="https://umami.is" target="_blank" rel="noopener">Umami</a> (loaded from cloud.umami.is) to count visits. It records page views and general details such as the browser, device type, country and the site you came from. Umami says it does not use cookies and does not collect personal information. It does not receive your file, your usernames or your numbers.</li>
 <li><b>Outside links:</b> TikTok profiles, the follow links to X and TikTok, the other tools listed below and the page that hosts this site are outside this page. Their own policies apply.</li>
 <li><b>Children:</b> this tool is not made for children under 13.</li>
 <li><b>Contact:</b> <a href="https://x.com/katerinaramm1" target="_blank" rel="noopener">@katerinaramm1</a> on X.</li>
 </ul>
-</section>
+</details>
 
 <section class="card" id="follow">
 <h2>Enjoyed this tool?</h2>
@@ -263,7 +327,7 @@ footer a{color:inherit}
     lines.forEach(function (raw) {
       var line = raw.trim();
       if (!line) { flush(); return; }
-      var h = line.match(HEADER_RE);
+      var h = line.replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '').match(HEADER_RE); // also accepts "--- Following ---", "## Following:"
       if (h) {
         flush();
         section = classifyKey(h[1]);
@@ -380,6 +444,28 @@ footer a{color:inherit}
     return '\uFEFF' + rows.join('\r\n');
   }
 
+  // ----- paging, set-aside split and share helpers -----
+  function paginate(list, page, size) {
+    var pages = Math.max(1, Math.ceil(list.length / size));
+    var p = Math.min(Math.max(1, page || 1), pages);
+    return { items: list.slice((p - 1) * size, p * size), page: p, pages: pages,
+             from: list.length ? (p - 1) * size + 1 : 0, to: Math.min(p * size, list.length), total: list.length };
+  }
+  function splitAside(list, state) {
+    var aside = (state && state.aside) || {};
+    var active = [], set = [];
+    list.forEach(function (e) { (aside[lower(e.user)] ? set : active).push(e); });
+    return { active: active, aside: set };
+  }
+  function shareStats(R) {
+    return { rate: Math.round(R.rate * 100), following: R.following.length,
+             mutuals: R.mutuals.length, notBack: R.notBack.length };
+  }
+  function shareText(s, url) {
+    return 'I checked who does not follow me back on TikTok: ' + s.rate + '% of the accounts I follow follow me back. ' +
+      'Check yours, it is free and your file stays on your device: ' + url;
+  }
+
   function profileUrl(user) { return 'https://www.tiktok.com/@' + encodeURIComponent(user); }
 
   function monthsAgo(ts, nowTs) { return (nowTs - ts) / (30.4375 * 24 * 3600 * 1000); }
@@ -387,7 +473,8 @@ footer a{color:inherit}
   return {
     parseAny: parseAny, parseDate: parseDate, analyze: analyze, compute: compute,
     progressStats: progressStats, progressLine: progressLine, dayKey: dayKey,
-    toCSV: toCSV, csvCell: csvCell, profileUrl: profileUrl, monthsAgo: monthsAgo, lower: lower
+    toCSV: toCSV, csvCell: csvCell, profileUrl: profileUrl, monthsAgo: monthsAgo, lower: lower,
+    paginate: paginate, splitAside: splitAside, shareStats: shareStats, shareText: shareText
   };
 });
 </script>
@@ -395,16 +482,19 @@ footer a{color:inherit}
   'use strict';
   var C = window.TTCore;
   var BATCH = 100; // profiles per batch: check the Instagram tool's value so the tools match
-  var PAGE = 200;  // rows shown at a time
+  var SIZES = [25, 50, 100, 500];
   var STORE_KEY = 'tt-unfollow-progress-v1';
+  var SIZE_KEY = 'tt-unfollow-pagesize-v1';
+  var SITE = 'https://katerinaramm1.github.io/tiktok-unfollow/';
   var JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  var TAB_LABELS = { notBack: 'Not following back', aside: 'Set aside', mutuals: 'Mutuals', fans: 'Fans (you do not follow)' };
 
   function $(id) { return document.getElementById(id); }
   function fmt(n) { try { return n.toLocaleString(); } catch (e) { return String(n); } }
 
   // ---------- storage that never breaks the page ----------
   var storageBlocked = false; // set when the browser refuses storage
-  var isExample = false;      // example data never touches storage
+  var isExample = false;      // example data never saves progress
   function loadState() {
     if (isExample || storageBlocked) return { opened: {}, aside: {} };
     try {
@@ -422,14 +512,24 @@ footer a{color:inherit}
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
     catch (e) { storageBlocked = true; }
   }
+  function loadSize() {
+    try {
+      var n = parseInt(localStorage.getItem(SIZE_KEY), 10);
+      if (SIZES.indexOf(n) !== -1) return n;
+    } catch (e) { /* ignore */ }
+    return 50;
+  }
+  function saveSize(n) { try { localStorage.setItem(SIZE_KEY, String(n)); } catch (e) { /* ignore */ } }
 
   // ---------- app state ----------
   var R = null;            // analysis result
-  var files = [];          // {name, kind}
+  var files = [];          // {name, note}
   var tab = 'notBack';
-  var shown = PAGE;
+  var page = 1;
+  var pageSize = loadSize();
+  $('pagesize').value = String(pageSize);
 
-  function showMsg(text, isError) {
+  function showMsg(text) {
     var m = $('msg');
     if (!text) { m.classList.add('hidden'); m.textContent = ''; return; }
     m.textContent = text; m.classList.remove('hidden');
@@ -505,12 +605,21 @@ footer a{color:inherit}
   }
 
   function start(res, infos, example) {
-    R = res; files = infos; isExample = example; tab = 'notBack'; shown = PAGE;
+    R = res; files = infos; isExample = example; tab = 'notBack'; page = 1;
     state = loadState();
     $('q').value = ''; $('age').value = '0';
     $('results').classList.remove('hidden');
     $('startover').classList.remove('hidden');
+    var ri = resumeInfo(), note = '';
+    if (ri.any) {
+      var done = C.progressStats(state, R.notBack, Date.now(), BATCH).opened;
+      if (ri.idx >= 0) {
+        page = Math.floor(ri.idx / pageSize) + 1;
+        note = 'Welcome back. This is the page where you stopped (' + fmt(done) + ' profiles opened so far).';
+      } else note = 'Welcome back. You have opened every profile in this list.';
+    }
     render();
+    setNote(note);
     $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -518,6 +627,8 @@ footer a{color:inherit}
     $('results').classList.remove('hidden');
     $('stats').textContent = '';
     $('list').textContent = '';
+    $('share').classList.add('hidden');
+    $('pager').classList.add('hidden');
     renderFiles();
   }
 
@@ -538,8 +649,13 @@ footer a{color:inherit}
     });
   }
 
+  function splitNotBack() { return C.splitAside(R.notBack, state); }
+
   function currentList() {
-    var list = R[tab] || [];
+    var list;
+    if (tab === 'notBack') list = splitNotBack().active;
+    else if (tab === 'aside') list = splitNotBack().aside;
+    else list = R[tab] || [];
     var q = $('q').value.trim().toLowerCase();
     var months = parseInt($('age').value, 10) || 0;
     var now = Date.now();
@@ -550,11 +666,43 @@ footer a{color:inherit}
     });
   }
 
+  function renderTabs() {
+    var sp = splitNotBack();
+    var counts = { notBack: sp.active.length, aside: sp.aside.length };
+    Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function (b) {
+      var t = b.getAttribute('data-tab');
+      b.textContent = TAB_LABELS[t] + (counts[t] !== undefined ? ' (' + fmt(counts[t]) + ')' : '');
+      b.setAttribute('aria-pressed', t === tab ? 'true' : 'false');
+    });
+  }
+
   function renderProgress() {
     var s = C.progressStats(state, R.notBack, Date.now(), BATCH);
     $('progress').textContent = C.progressLine(s, fmt);
   }
 
+  function afterChange() { renderTabs(); renderProgress(); renderList(); renderShare(); }
+
+  // where the person stopped: the first profile in the main list that is not opened yet
+  function resumeInfo() {
+    var active = splitNotBack().active, i, idx = -1;
+    for (i = 0; i < active.length; i++) {
+      if (!state.opened[C.lower(active[i].user)]) { idx = i; break; }
+    }
+    return { any: Object.keys(state.opened).length > 0, idx: idx, key: idx >= 0 ? C.lower(active[idx].user) : null };
+  }
+  function setNote(t) { $('resumenote').textContent = t || ''; }
+  function goResume() {
+    var ri = resumeInfo();
+    tab = 'notBack'; $('q').value = ''; $('age').value = '0';
+    if (ri.idx >= 0) page = Math.floor(ri.idx / pageSize) + 1; else page = 1;
+    setNote(ri.idx >= 0 ? 'This is the page where you stopped.' : 'You have opened every profile in this list.');
+    renderTabs(); renderList();
+    var row = document.querySelector('#list li.resume');
+    (row || $('list')).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  var resumeKey = null; // set by renderList: the first not-yet-opened profile, if anything was opened before
   function makeRow(e) {
     var key = C.lower(e.user);
     var li = document.createElement('li');
@@ -572,40 +720,54 @@ footer a{color:inherit}
     a.className = 'btn primary'; a.textContent = 'Open profile';
     a.href = C.profileUrl(e.user); a.target = '_blank'; a.rel = 'noopener noreferrer';
     acts.appendChild(a);
-    function paint() {
-      li.className = state.opened[key] ? 'done' : (state.aside[key] ? 'aside' : '');
-    }
+    li.className = (tab === 'notBack' && state.opened[key]) ? 'done' : '';
+    if (tab === 'notBack' && key === resumeKey) { li.className = 'resume'; li.title = 'Continue from here'; }
     a.addEventListener('click', function () {
       if (tab === 'notBack' && !state.opened[key]) {
-        state.opened[key] = Date.now(); delete state.aside[key];
-        saveState(); paint(); renderProgress();
+        state.opened[key] = Date.now();
+        saveState(); li.className = 'done'; renderProgress();
       }
     });
-    if (tab === 'notBack') {
+    if (tab === 'notBack' || tab === 'aside') {
       var b = document.createElement('button'); b.type = 'button';
-      function label() { b.textContent = state.aside[key] ? 'Undo' : 'Set aside'; }
+      b.textContent = tab === 'aside' ? 'Move back' : 'Set aside';
       b.addEventListener('click', function () {
-        if (state.aside[key]) delete state.aside[key]; else { state.aside[key] = Date.now(); delete state.opened[key]; }
-        saveState(); label(); paint(); renderProgress();
+        if (tab === 'aside') delete state.aside[key];
+        else { state.aside[key] = Date.now(); delete state.opened[key]; }
+        saveState(); afterChange();
       });
-      label(); acts.appendChild(b);
+      acts.appendChild(b);
     }
     li.appendChild(acts);
-    paint();
     return li;
   }
 
   function renderList() {
     var list = currentList();
+    var pg = C.paginate(list, page, pageSize);
+    page = pg.page;
+    var ri = resumeInfo();
+    resumeKey = ri.any ? ri.key : null;
+    $('resume').classList.toggle('hidden', !(tab === 'notBack' && ri.any));
     var ul = $('list'); ul.textContent = '';
-    list.slice(0, shown).forEach(function (e) { ul.appendChild(makeRow(e)); });
-    $('more').classList.toggle('hidden', list.length <= shown);
+    pg.items.forEach(function (e) { ul.appendChild(makeRow(e)); });
+    $('pager').classList.toggle('hidden', pg.total === 0);
+    $('pageinfo').textContent = 'Showing ' + fmt(pg.from) + '–' + fmt(pg.to) + ' of ' + fmt(pg.total) + ' · Page ' + fmt(pg.page) + ' of ' + fmt(pg.pages);
+    $('prev').disabled = pg.page <= 1;
+    $('next').disabled = pg.page >= pg.pages;
     var hint = $('hint');
-    if (!list.length) hint.textContent = 'Nothing to show here.';
-    else hint.textContent = 'Showing ' + fmt(Math.min(shown, list.length)) + ' of ' + fmt(list.length) + '. ' +
-      (tab === 'notBack' ? 'Open a profile, then unfollow in TikTok. Opened profiles are crossed out and remembered in this browser.' : '');
-    $('progress').classList.toggle('hidden', tab !== 'notBack');
-    $('reset').classList.toggle('hidden', tab !== 'notBack');
+    if (!pg.total) {
+      hint.textContent = tab === 'aside' ? 'Nothing is set aside. Use "Set aside" on a profile in the Not following back list to keep it here for later.' : 'Nothing to show here.';
+    } else if (tab === 'notBack') {
+      hint.textContent = 'Open a profile, then unfollow in TikTok. Opened profiles are crossed out and remembered in this browser. "Set aside" moves a profile to the Set aside list.';
+    } else if (tab === 'aside') {
+      hint.textContent = 'These are the profiles you set aside for now. "Move back" puts one back in the Not following back list.';
+    } else if (tab === 'fans') {
+      hint.textContent = 'This list can be incomplete: TikTok\'s export may leave out some of your followers.';
+    } else hint.textContent = '';
+    var showProgress = tab === 'notBack' || tab === 'aside';
+    $('progress').classList.toggle('hidden', !showProgress);
+    $('reset').classList.toggle('hidden', !showProgress);
   }
 
   function renderFiles() {
@@ -627,12 +789,120 @@ footer a{color:inherit}
     renderStats();
     $('capnote').classList.toggle('hidden', !R.capped);
     $('age').classList.toggle('hidden', R.datesFound === 0);
-    var btns = document.querySelectorAll('.tabs button');
-    Array.prototype.forEach.call(btns, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-tab') === tab ? 'true' : 'false'); });
+    $('share').classList.remove('hidden');
+    renderTabs();
     renderProgress();
     renderList();
     renderFiles();
+    renderShare();
   }
+
+  // ---------- share picture (numbers only) ----------
+  var FONT = '"Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif';
+  function rr(ctx, x, y, w, h, r) {
+    ctx.beginPath(); ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  function fitText(ctx, text, maxW, size, weight) {
+    var s = size;
+    ctx.font = weight + ' ' + s + 'px ' + FONT;
+    while (ctx.measureText(text).width > maxW && s > 20) { s -= 2; ctx.font = weight + ' ' + s + 'px ' + FONT; }
+  }
+  function drawShare(cv, H, st) {
+    var W = 1080, ctx = cv.getContext('2d');
+    cv.width = W; cv.height = H;
+    var bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#0d0e14'); bg.addColorStop(1, '#1d1630');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    var bar = ctx.createLinearGradient(0, 0, W, 0);
+    bar.addColorStop(0, '#25f4ee'); bar.addColorStop(1, '#fe2c55');
+    ctx.fillStyle = bar; ctx.fillRect(0, 0, W, 16); ctx.fillRect(0, H - 16, W, 16);
+    var o = (H - 1350) / 2;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 54px ' + FONT;
+    ctx.fillText('TikTok follow-back check', W / 2, o + 150);
+
+    var rate = st.following ? st.rate + '%' : '–';
+    ctx.font = 'bold 340px ' + FONT;
+    ctx.fillStyle = '#25f4ee'; ctx.fillText(rate, W / 2 - 8, o + 566);
+    ctx.fillStyle = '#fe2c55'; ctx.fillText(rate, W / 2 + 8, o + 554);
+    ctx.fillStyle = '#ffffff'; ctx.fillText(rate, W / 2, o + 560);
+
+    ctx.fillStyle = '#d6d8e0'; ctx.font = 'bold 40px ' + FONT;
+    ctx.fillText('of the accounts I follow follow me back', W / 2, o + 650);
+
+    var cards = [['Following', fmt(st.following)], ['Follow me back', fmt(st.mutuals)], ["Don't follow back", fmt(st.notBack)]];
+    var cw = 310, gap = 25, x0 = (W - (3 * cw + 2 * gap)) / 2, cy = o + 730;
+    cards.forEach(function (c, i) {
+      var x = x0 + i * (cw + gap);
+      ctx.fillStyle = 'rgba(255,255,255,0.09)'; rr(ctx, x, cy, cw, 290, 28); ctx.fill();
+      ctx.fillStyle = '#ffffff'; fitText(ctx, c[1], cw - 36, 84, 'bold');
+      ctx.fillText(c[1], x + cw / 2, cy + 150);
+      ctx.fillStyle = '#b9bcc8'; fitText(ctx, c[0], cw - 24, 30, 'normal');
+      ctx.fillText(c[0], x + cw / 2, cy + 220);
+    });
+
+    ctx.fillStyle = '#ffffff'; ctx.font = '36px ' + FONT;
+    ctx.fillText('Check yours, free:', W / 2, o + 1140);
+    ctx.fillStyle = '#25f4ee'; fitText(ctx, SITE.replace(/^https?:\/\//, '').replace(/\/$/, ''), W - 120, 40, 'bold');
+    ctx.fillText(SITE.replace(/^https?:\/\//, '').replace(/\/$/, ''), W / 2, o + 1200);
+    ctx.fillStyle = '#b9bcc8'; ctx.font = '30px ' + FONT;
+    ctx.fillText('Your file never leaves your device', W / 2, o + 1255);
+  }
+
+  function currentShareText() { return C.shareText(C.shareStats(R), SITE); }
+
+  function renderShare() {
+    if (!R || !R.following.length) { $('share').classList.add('hidden'); return; }
+    var H = parseInt($('sharesize').value, 10) || 1350;
+    drawShare($('sharecanvas'), H, C.shareStats(R));
+    var off = isExample;
+    $('sharenote').classList.toggle('hidden', !off);
+    $('saveimg').disabled = off; $('shareimg').disabled = off; $('copytext').disabled = off;
+    $('postx').classList.toggle('hidden', off);
+    $('postx').href = 'https://x.com/intent/post?text=' + encodeURIComponent(currentShareText());
+    $('shareimg').classList.toggle('hidden', !(navigator.share && navigator.canShare));
+  }
+
+  function canvasBlob(cb) { $('sharecanvas').toBlob(cb, 'image/png'); }
+  function shareMsg(t) { $('sharemsg').textContent = t; }
+
+  $('sharesize').addEventListener('change', function () { renderShare(); });
+  $('saveimg').addEventListener('click', function () {
+    canvasBlob(function (blob) {
+      if (!blob) { shareMsg('The picture could not be made.'); return; }
+      var url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = 'tiktok-follow-back.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+      shareMsg('Saved.');
+    });
+  });
+  $('shareimg').addEventListener('click', function () {
+    canvasBlob(function (blob) {
+      if (!blob) { shareMsg('The picture could not be made.'); return; }
+      var file = new File([blob], 'tiktok-follow-back.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], text: currentShareText() }).catch(function () { /* cancelled */ });
+      } else shareMsg('Sharing is not supported here. Use Save image.');
+    });
+  });
+  $('copytext').addEventListener('click', function () {
+    var t = currentShareText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function () { shareMsg('Copied.'); }, function () { shareMsg('Could not copy.'); });
+    } else shareMsg('Could not copy.');
+  });
+
+  // ---------- privacy policy: collapsed, opens from any "#privacy" link ----------
+  function openPrivacy() { var d = $('privacy'); if (d) d.open = true; }
+  Array.prototype.forEach.call(document.querySelectorAll('a[href="#privacy"]'), function (a) {
+    a.addEventListener('click', openPrivacy);
+  });
+  window.addEventListener('hashchange', function () { if (location.hash === '#privacy') openPrivacy(); });
+  if (location.hash === '#privacy') openPrivacy();
 
   // ---------- events ----------
   var drop = $('drop'), fileInput = $('file');
@@ -644,11 +914,17 @@ footer a{color:inherit}
   drop.addEventListener('drop', function (e) { handleFiles(e.dataTransfer && e.dataTransfer.files); });
 
   Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function (b) {
-    b.addEventListener('click', function () { tab = b.getAttribute('data-tab'); shown = PAGE; render(); });
+    b.addEventListener('click', function () { tab = b.getAttribute('data-tab'); page = 1; setNote(''); renderTabs(); renderList(); });
   });
-  $('q').addEventListener('input', function () { shown = PAGE; renderList(); });
-  $('age').addEventListener('change', function () { shown = PAGE; renderList(); });
-  $('more').addEventListener('click', function () { shown += PAGE; renderList(); });
+  $('q').addEventListener('input', function () { page = 1; setNote(''); renderList(); });
+  $('age').addEventListener('change', function () { page = 1; setNote(''); renderList(); });
+  $('pagesize').addEventListener('change', function () {
+    pageSize = parseInt($('pagesize').value, 10) || 50; saveSize(pageSize); page = 1; setNote(''); renderList();
+  });
+  $('resume').addEventListener('click', goResume);
+  function goPage(delta) { page += delta; setNote(''); renderList(); $('list').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  $('prev').addEventListener('click', function () { goPage(-1); });
+  $('next').addEventListener('click', function () { goPage(1); });
 
   $('csv').addEventListener('click', function () {
     var blob = new Blob([C.toCSV(currentList())], { type: 'text/csv;charset=utf-8' });
@@ -665,7 +941,7 @@ footer a{color:inherit}
     state = { opened: {}, aside: {} };
     if (!isExample) { try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ } }
     $('resetconfirm').classList.add('hidden');
-    render();
+    page = 1; render();
   });
 
   $('startover').addEventListener('click', function () {
@@ -677,12 +953,13 @@ footer a{color:inherit}
   $('example').addEventListener('click', function () {
     var now = Date.now(), day = 24 * 3600 * 1000, i;
     var following = [], followers = [];
-    for (i = 1; i <= 40; i++) following.push({ Date: new Date(now - (i * 17) * day).toISOString().replace('T', ' ').slice(0, 19), UserName: 'example_account_' + i });
-    for (i = 1; i <= 40; i += 2) followers.push({ Date: new Date(now - (i * 9) * day).toISOString().replace('T', ' ').slice(0, 19), UserName: 'example_account_' + i });
-    for (i = 1; i <= 8; i++) followers.push({ Date: new Date(now - (i * 5) * day).toISOString().replace('T', ' ').slice(0, 19), UserName: 'example_fan_' + i });
+    function d(n) { return new Date(now - n * day).toISOString().replace('T', ' ').slice(0, 19); }
+    for (i = 1; i <= 120; i++) following.push({ Date: d(i * 7), UserName: 'example_account_' + i });
+    for (i = 1; i <= 120; i += 2) followers.push({ Date: d(i * 4), UserName: 'example_account_' + i });
+    for (i = 1; i <= 8; i++) followers.push({ Date: d(i * 3), UserName: 'example_fan_' + i });
     var json = JSON.stringify({ Activity: { 'Follower List': { FansList: followers }, 'Following List': { Following: following } } });
     start(C.analyze([json]), [{ name: 'Example data (made up)', note: '' }], true);
-    showMsg('This is made-up example data. Progress on it is not saved.');
+    showMsg('This is made-up example data. Progress on it is not saved, and sharing is switched off.');
   });
 
   // ---------- details for a feedback message (no usernames) ----------
