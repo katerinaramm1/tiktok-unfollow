@@ -19,6 +19,9 @@
 <meta name="twitter:image" content="https://katerinaramm1.github.io/tiktok-unfollow/preview.png">
 <!-- ANALYTICS: Umami (added 27 Oct 2026). If this tag changes, update the "Visit counting" line in the privacy section too. -->
 <script defer src="https://cloud.umami.is/script.js" data-website-id="4b76d123-1d1c-4a75-badf-9d4c456ce74b"></script>
+<!-- ANALYTICS 2: GoatCounter (added 27 Oct 2026). The number in the footer is read from the same site. In GoatCounter's site settings, "Allow adding visitor counts on your website" must be on, or the footer shows a dash. -->
+<script data-goatcounter="https://tiktok-unfollow.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 <style>
 :root{--bg:#fafafa;--card:#fff;--text:#161823;--muted:#5b5f6b;--line:#e4e5e9;--accent:#fe2c55;--accent2:#25f4ee;--ok:#117a4d;--warn:#8a5a00;--warnbg:#fff4d6;--btn:#161823;--btntext:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#121318;--card:#1b1d25;--text:#f1f1f3;--muted:#a3a7b3;--line:#2c2f3a;--accent:#ff4d73;--ok:#4cd694;--warn:#f1c66a;--warnbg:#3a2f12;--btn:#f1f1f3;--btntext:#121318}}
@@ -54,8 +57,9 @@ ul.list li{display:flex;gap:10px;align-items:center;justify-content:space-betwee
 ul.list .who{min-width:0;overflow-wrap:anywhere}
 ul.list .who small{display:block;color:var(--muted)}
 ul.list li.done .who strong{text-decoration:line-through;color:var(--muted)}
-ul.list li.aside{opacity:.6}
-ul.list li.resume{box-shadow:inset 4px 0 0 var(--accent);padding-left:12px}
+ul.list a.name{color:inherit;font-weight:700;text-decoration:none}
+ul.list a.name:hover{text-decoration:underline}
+ul.list li.done a.name{text-decoration:line-through;color:var(--muted)}
 .actions{display:flex;gap:6px;flex-shrink:0}
 .confirm{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;margin:8px 0}
 details summary{cursor:pointer;font-weight:600}
@@ -119,7 +123,7 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 </div>
 <div class="tabs" role="group" aria-label="Lists">
 <button type="button" data-tab="notBack" aria-pressed="true">Not following back</button>
-<button type="button" data-tab="aside" aria-pressed="false">Set aside</button>
+<button type="button" data-tab="done" aria-pressed="false">Done</button>
 <button type="button" data-tab="mutuals" aria-pressed="false">Mutuals</button>
 <button type="button" data-tab="fans" aria-pressed="false">Fans (you do not follow)</button>
 </div>
@@ -142,9 +146,9 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 </div>
 <div class="progress" id="progress"></div>
 <p class="muted" id="resumenote" role="status"></p>
-<div class="row"><button type="button" id="resume" class="hidden">Go to where I stopped</button><button type="button" id="reset">Reset progress</button></div>
+<div class="row"><button type="button" id="reset">Reset progress</button></div>
 <div id="resetconfirm" class="confirm hidden">
-<p>This deletes the list of profiles you opened and set aside from this browser. It cannot be undone.</p>
+<p>This deletes the Done list (the profiles you opened) from this browser. They will appear in the Not following back list again. It cannot be undone.</p>
 <div class="row"><button type="button" id="resetyes" class="primary">Yes, reset</button><button type="button" id="resetno">Cancel</button></div>
 </div>
 <ul class="list" id="list"></ul>
@@ -191,9 +195,9 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 <ul>
 <li><b>Your file stays on your device.</b> The page reads it in your browser. Nothing is uploaded to a server.</li>
 <li><b>What is read:</b> the usernames (and the follow dates, if present) in your followers and following lists. Nothing else in the file is used.</li>
-<li><b>What is stored:</b> the page keeps a list of the profiles you opened or set aside, with the time (so the page can reopen where you stopped), and your choice of profiles per page, in your browser only. The page does not keep your file, so you upload it again each time. It is never sent anywhere. "Reset progress" deletes it, and so does clearing the site data of your browser. It is not shared between your phone and your computer.</li>
+<li><b>What is stored:</b> the page keeps a list of the profiles you opened (the Done list), with the time (so the page can start at the next profile when you come back), and your choice of profiles per page, in your browser only. The page does not keep your file, so you upload it again each time. It is never sent anywhere. "Reset progress" deletes it, and so does clearing the site data of your browser. It is not shared between your phone and your computer.</li>
 <li><b>Share picture:</b> it is drawn in your browser from four numbers (follow-back rate, following, mutuals, not following back) and the site address. Nothing is uploaded. "Post on X" opens X's own page with a message that you can edit.</li>
-<li><b>Visit counting:</b> this page uses <a href="https://umami.is" target="_blank" rel="noopener">Umami</a> (loaded from cloud.umami.is) to count visits. It records page views and general details such as the browser, device type, country and the site you came from. Umami says it does not use cookies and does not collect personal information. It does not receive your file, your usernames or your numbers.</li>
+<li><b>Visit counting:</b> this page uses two counters, <a href="https://umami.is" target="_blank" rel="noopener">Umami</a> (loaded from cloud.umami.is) and <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a> (loaded from gc.zgo.at). They record page views and general details such as the browser, device type, country and the site you came from. Both say they do not use cookies for this and do not collect personal information. Neither receives your file, your usernames or your numbers. The "Page views so far" number at the bottom of the page is read from GoatCounter, so your browser asks tiktok-unfollow.goatcounter.com for it.</li>
 <li><b>Outside links:</b> TikTok profiles, the follow links to X and TikTok, the other tools listed below and the page that hosts this site are outside this page. Their own policies apply.</li>
 <li><b>Children:</b> this tool is not made for children under 13.</li>
 <li><b>Contact:</b> <a href="https://x.com/katerinaramm1" target="_blank" rel="noopener">@katerinaramm1</a> on X.</li>
@@ -216,6 +220,7 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 <a href="https://katerinaramm1.github.io/linkedin-unfollow/" target="_blank" rel="noopener">LinkedIn connection check</a></p>
 <p>Created by <a href="https://x.com/katerinaramm1" target="_blank" rel="noopener">@katerinaramm1</a> with the help of Claude. <a href="#privacy">Privacy</a></p>
 <p>Not affiliated with TikTok or ByteDance. TikTok is a trademark of its owner.</p>
+<p>Page views so far: <b id="visitcount">–</b> <span class="muted">(counted with GoatCounter)</span></p>
 </footer>
 </div>
 <script>/* TikTok unfollow checker: logic only (no DOM). Works in the browser and in Node for tests.
@@ -403,28 +408,25 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     };
   }
 
-  // ----- progress (opened / set aside), keyed by lower-case username -----
+  // ----- progress (opened = moved to the Done list), keyed by lower-case username -----
   function dayKey(ts) {
     var d = new Date(ts);
     return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
   }
   function progressStats(state, list, nowTs, batch) {
-    var opened = state.opened || {}, aside = state.aside || {};
-    var today = dayKey(nowTs), todayCount = 0, openedCount = 0, asideCount = 0, remaining = 0;
+    var opened = state.opened || {};
+    var today = dayKey(nowTs), todayCount = 0, openedCount = 0, remaining = 0;
     Object.keys(opened).forEach(function (k) { if (dayKey(opened[k]) === today) todayCount++; });
     list.forEach(function (e) {
-      var k = lower(e.user);
-      if (opened[k]) openedCount++;
-      else if (aside[k]) asideCount++;
-      else remaining++;
+      if (opened[lower(e.user)]) openedCount++; else remaining++;
     });
-    return { opened: openedCount, today: todayCount, aside: asideCount, remaining: remaining,
+    return { opened: openedCount, today: todayCount, remaining: remaining,
              batches: Math.ceil(remaining / batch) };
   }
   function progressLine(s, fmt) {
     fmt = fmt || function (n) { return String(n); };
     var b = s.batches;
-    return fmt(s.opened) + ' opened · ' + fmt(s.today) + ' today · ' + fmt(s.aside) + ' set aside · ' +
+    return fmt(s.opened) + ' opened · ' + fmt(s.today) + ' today · ' +
       (b === 0 ? 'all done' : 'about ' + fmt(b) + ' batch' + (b === 1 ? '' : 'es') + ' to go');
   }
 
@@ -444,18 +446,20 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     return '\uFEFF' + rows.join('\r\n');
   }
 
-  // ----- paging, set-aside split and share helpers -----
+  // ----- paging, done split and share helpers -----
   function paginate(list, page, size) {
     var pages = Math.max(1, Math.ceil(list.length / size));
     var p = Math.min(Math.max(1, page || 1), pages);
     return { items: list.slice((p - 1) * size, p * size), page: p, pages: pages,
              from: list.length ? (p - 1) * size + 1 : 0, to: Math.min(p * size, list.length), total: list.length };
   }
-  function splitAside(list, state) {
-    var aside = (state && state.aside) || {};
-    var active = [], set = [];
-    list.forEach(function (e) { (aside[lower(e.user)] ? set : active).push(e); });
-    return { active: active, aside: set };
+  // Opened profiles leave the main list and go to "done" (most recently opened first).
+  function splitDone(list, state) {
+    var opened = (state && state.opened) || {};
+    var active = [], done = [];
+    list.forEach(function (e) { (opened[lower(e.user)] ? done : active).push(e); });
+    done.sort(function (a, b) { return opened[lower(b.user)] - opened[lower(a.user)]; });
+    return { active: active, done: done };
   }
   function shareStats(R) {
     return { rate: Math.round(R.rate * 100), following: R.following.length,
@@ -474,7 +478,7 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     parseAny: parseAny, parseDate: parseDate, analyze: analyze, compute: compute,
     progressStats: progressStats, progressLine: progressLine, dayKey: dayKey,
     toCSV: toCSV, csvCell: csvCell, profileUrl: profileUrl, monthsAgo: monthsAgo, lower: lower,
-    paginate: paginate, splitAside: splitAside, shareStats: shareStats, shareText: shareText
+    paginate: paginate, splitDone: splitDone, shareStats: shareStats, shareText: shareText
   };
 });
 </script>
@@ -487,7 +491,7 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   var SIZE_KEY = 'tt-unfollow-pagesize-v1';
   var SITE = 'https://katerinaramm1.github.io/tiktok-unfollow/';
   var JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-  var TAB_LABELS = { notBack: 'Not following back', aside: 'Set aside', mutuals: 'Mutuals', fans: 'Fans (you do not follow)' };
+  var TAB_LABELS = { notBack: 'Not following back', done: 'Done', mutuals: 'Mutuals', fans: 'Fans (you do not follow)' };
 
   function $(id) { return document.getElementById(id); }
   function fmt(n) { try { return n.toLocaleString(); } catch (e) { return String(n); } }
@@ -496,17 +500,17 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   var storageBlocked = false; // set when the browser refuses storage
   var isExample = false;      // example data never saves progress
   function loadState() {
-    if (isExample || storageBlocked) return { opened: {}, aside: {} };
+    if (isExample || storageBlocked) return { opened: {} };
     try {
       var raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         var s = JSON.parse(raw);
-        if (s && typeof s === 'object') { s.opened = s.opened || {}; s.aside = s.aside || {}; return s; }
+        if (s && typeof s === 'object') return { opened: (s.opened && typeof s.opened === 'object') ? s.opened : {} };
       }
     } catch (e) { storageBlocked = true; }
-    return { opened: {}, aside: {} };
+    return { opened: {} };
   }
-  var state = { opened: {}, aside: {} };
+  var state = { opened: {} };
   function saveState() {
     if (isExample || storageBlocked) return; // progress then lives in memory only, for this visit
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
@@ -610,13 +614,11 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     $('q').value = ''; $('age').value = '0';
     $('results').classList.remove('hidden');
     $('startover').classList.remove('hidden');
-    var ri = resumeInfo(), note = '';
-    if (ri.any) {
-      var done = C.progressStats(state, R.notBack, Date.now(), BATCH).opened;
-      if (ri.idx >= 0) {
-        page = Math.floor(ri.idx / pageSize) + 1;
-        note = 'Welcome back. This is the page where you stopped (' + fmt(done) + ' profiles opened so far).';
-      } else note = 'Welcome back. You have opened every profile in this list.';
+    var done = C.progressStats(state, R.notBack, Date.now(), BATCH), note = '';
+    if (done.opened > 0) {
+      note = done.remaining > 0
+        ? 'Welcome back. ' + (done.opened === 1 ? 'The profile you opened is' : 'The ' + fmt(done.opened) + ' profiles you opened are') + ' in the Done list, so this list starts at the next one.'
+        : 'Welcome back. You have opened every profile in this list. They are in the Done list.';
     }
     render();
     setNote(note);
@@ -649,12 +651,12 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     });
   }
 
-  function splitNotBack() { return C.splitAside(R.notBack, state); }
+  function splitNotBack() { return C.splitDone(R.notBack, state); }
 
   function currentList() {
     var list;
     if (tab === 'notBack') list = splitNotBack().active;
-    else if (tab === 'aside') list = splitNotBack().aside;
+    else if (tab === 'done') list = splitNotBack().done;
     else list = R[tab] || [];
     var q = $('q').value.trim().toLowerCase();
     var months = parseInt($('age').value, 10) || 0;
@@ -668,7 +670,7 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
   function renderTabs() {
     var sp = splitNotBack();
-    var counts = { notBack: sp.active.length, aside: sp.aside.length };
+    var counts = { notBack: sp.active.length, done: sp.done.length };
     Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function (b) {
       var t = b.getAttribute('data-tab');
       b.textContent = TAB_LABELS[t] + (counts[t] !== undefined ? ' (' + fmt(counts[t]) + ')' : '');
@@ -681,38 +683,29 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     $('progress').textContent = C.progressLine(s, fmt);
   }
 
-  function afterChange() { renderTabs(); renderProgress(); renderList(); renderShare(); }
-
-  // where the person stopped: the first profile in the main list that is not opened yet
-  function resumeInfo() {
-    var active = splitNotBack().active, i, idx = -1;
-    for (i = 0; i < active.length; i++) {
-      if (!state.opened[C.lower(active[i].user)]) { idx = i; break; }
-    }
-    return { any: Object.keys(state.opened).length > 0, idx: idx, key: idx >= 0 ? C.lower(active[idx].user) : null };
-  }
+  function afterChange() { renderTabs(); renderProgress(); renderList(); }
   function setNote(t) { $('resumenote').textContent = t || ''; }
-  function goResume() {
-    var ri = resumeInfo();
-    tab = 'notBack'; $('q').value = ''; $('age').value = '0';
-    if (ri.idx >= 0) page = Math.floor(ri.idx / pageSize) + 1; else page = 1;
-    setNote(ri.idx >= 0 ? 'This is the page where you stopped.' : 'You have opened every profile in this list.');
-    renderTabs(); renderList();
-    var row = document.querySelector('#list li.resume');
-    (row || $('list')).scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  function timeText(ts) {
+    try { return new Date(ts).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }); }
+    catch (e) { return new Date(ts).toLocaleString(); }
   }
 
-  var resumeKey = null; // set by renderList: the first not-yet-opened profile, if anything was opened before
+  // Opening a profile from the main list moves it to the Done list (after a short moment, so the
+  // strike-through can be seen). The Done list rows are clickable too and can be moved back with Undo.
   function makeRow(e) {
     var key = C.lower(e.user);
     var li = document.createElement('li');
     var who = document.createElement('div'); who.className = 'who';
-    var strong = document.createElement('strong'); strong.textContent = '@' + e.user;
-    who.appendChild(strong);
-    if (e.date !== null) {
-      var sm = document.createElement('small');
-      sm.textContent = 'Followed ' + new Date(e.date).toLocaleDateString();
-      who.appendChild(sm);
+    var name = document.createElement('a'); name.className = 'name';
+    name.textContent = '@' + e.user;
+    name.href = C.profileUrl(e.user); name.target = '_blank'; name.rel = 'noopener noreferrer';
+    who.appendChild(name);
+    var info = [];
+    if (e.date !== null) info.push('Followed ' + new Date(e.date).toLocaleDateString());
+    if (tab === 'done' && state.opened[key]) info.push('Opened ' + timeText(state.opened[key]));
+    if (info.length) {
+      var sm = document.createElement('small'); sm.textContent = info.join(' · '); who.appendChild(sm);
     }
     li.appendChild(who);
     var acts = document.createElement('div'); acts.className = 'actions';
@@ -720,22 +713,18 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     a.className = 'btn primary'; a.textContent = 'Open profile';
     a.href = C.profileUrl(e.user); a.target = '_blank'; a.rel = 'noopener noreferrer';
     acts.appendChild(a);
-    li.className = (tab === 'notBack' && state.opened[key]) ? 'done' : '';
-    if (tab === 'notBack' && key === resumeKey) { li.className = 'resume'; li.title = 'Continue from here'; }
-    a.addEventListener('click', function () {
-      if (tab === 'notBack' && !state.opened[key]) {
-        state.opened[key] = Date.now();
-        saveState(); li.className = 'done'; renderProgress();
-      }
-    });
-    if (tab === 'notBack' || tab === 'aside') {
-      var b = document.createElement('button'); b.type = 'button';
-      b.textContent = tab === 'aside' ? 'Move back' : 'Set aside';
-      b.addEventListener('click', function () {
-        if (tab === 'aside') delete state.aside[key];
-        else { state.aside[key] = Date.now(); delete state.opened[key]; }
-        saveState(); afterChange();
-      });
+    function openIt() {
+      if (tab !== 'notBack' || state.opened[key]) return;
+      state.opened[key] = Date.now();
+      saveState(); li.className = 'done'; renderProgress();
+      setTimeout(afterChange, 450);
+    }
+    a.addEventListener('click', openIt);
+    name.addEventListener('click', openIt);
+    if (tab === 'done') {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Undo';
+      b.title = 'Move back to the Not following back list';
+      b.addEventListener('click', function () { delete state.opened[key]; saveState(); afterChange(); });
       acts.appendChild(b);
     }
     li.appendChild(acts);
@@ -746,9 +735,6 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     var list = currentList();
     var pg = C.paginate(list, page, pageSize);
     page = pg.page;
-    var ri = resumeInfo();
-    resumeKey = ri.any ? ri.key : null;
-    $('resume').classList.toggle('hidden', !(tab === 'notBack' && ri.any));
     var ul = $('list'); ul.textContent = '';
     pg.items.forEach(function (e) { ul.appendChild(makeRow(e)); });
     $('pager').classList.toggle('hidden', pg.total === 0);
@@ -756,16 +742,19 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     $('prev').disabled = pg.page <= 1;
     $('next').disabled = pg.page >= pg.pages;
     var hint = $('hint');
+    var filtered = $('q').value.trim() !== '' || (parseInt($('age').value, 10) || 0) > 0;
     if (!pg.total) {
-      hint.textContent = tab === 'aside' ? 'Nothing is set aside. Use "Set aside" on a profile in the Not following back list to keep it here for later.' : 'Nothing to show here.';
+      if (tab === 'done') hint.textContent = 'Nothing here yet. When you open a profile from the Not following back list, it moves here.';
+      else if (tab === 'notBack' && !filtered && Object.keys(state.opened).length) hint.textContent = 'You have opened every profile in this list. They are in the Done list.';
+      else hint.textContent = 'Nothing to show here.';
     } else if (tab === 'notBack') {
-      hint.textContent = 'Open a profile, then unfollow in TikTok. Opened profiles are crossed out and remembered in this browser. "Set aside" moves a profile to the Set aside list.';
-    } else if (tab === 'aside') {
-      hint.textContent = 'These are the profiles you set aside for now. "Move back" puts one back in the Not following back list.';
+      hint.textContent = 'Open a profile, then unfollow in TikTok. The profile moves to the Done list, so the next one to handle is always at the top. It is remembered in this browser.';
+    } else if (tab === 'done') {
+      hint.textContent = 'Profiles you opened, newest first. Click a name or "Open profile" to look again. "Undo" moves a profile back to the Not following back list.';
     } else if (tab === 'fans') {
       hint.textContent = 'This list can be incomplete: TikTok\'s export may leave out some of your followers.';
     } else hint.textContent = '';
-    var showProgress = tab === 'notBack' || tab === 'aside';
+    var showProgress = tab === 'notBack' || tab === 'done';
     $('progress').classList.toggle('hidden', !showProgress);
     $('reset').classList.toggle('hidden', !showProgress);
   }
@@ -896,6 +885,18 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     } else shareMsg('Could not copy.');
   });
 
+  // ---------- page view count in the footer (GoatCounter); stays a dash if it cannot be read ----------
+  (function () {
+    var el = $('visitcount');
+    if (!el || typeof fetch !== 'function') return;
+    try {
+      fetch('https://tiktok-unfollow.goatcounter.com/counter/TOTAL.json')
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('no count')); })
+        .then(function (j) { if (j && j.count !== undefined && j.count !== null && String(j.count).trim() !== '') el.textContent = String(j.count); })
+        .catch(function () { /* keep the dash */ });
+    } catch (e) { /* keep the dash */ }
+  })();
+
   // ---------- privacy policy: collapsed, opens from any "#privacy" link ----------
   function openPrivacy() { var d = $('privacy'); if (d) d.open = true; }
   Array.prototype.forEach.call(document.querySelectorAll('a[href="#privacy"]'), function (a) {
@@ -921,7 +922,6 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   $('pagesize').addEventListener('change', function () {
     pageSize = parseInt($('pagesize').value, 10) || 50; saveSize(pageSize); page = 1; setNote(''); renderList();
   });
-  $('resume').addEventListener('click', goResume);
   function goPage(delta) { page += delta; setNote(''); renderList(); $('list').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   $('prev').addEventListener('click', function () { goPage(-1); });
   $('next').addEventListener('click', function () { goPage(1); });
@@ -938,7 +938,7 @@ label.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   $('reset').addEventListener('click', function () { $('resetconfirm').classList.remove('hidden'); $('resetyes').focus(); });
   $('resetno').addEventListener('click', function () { $('resetconfirm').classList.add('hidden'); });
   $('resetyes').addEventListener('click', function () {
-    state = { opened: {}, aside: {} };
+    state = { opened: {} };
     if (!isExample) { try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ } }
     $('resetconfirm').classList.add('hidden');
     page = 1; render();
