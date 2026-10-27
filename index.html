@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok Unfollow Check</title>
+<meta name="description" content="Find who you follow on TikTok that does not follow you back. Upload your own TikTok data file; everything stays in your browser.">
+<!-- ANALYTICS: paste the analytics tag here once the tool is chosen (leave empty until then). Update the privacy section below at the same time. -->
+
+<style>
+:root{--bg:#fafafa;--card:#fff;--text:#161823;--muted:#5b5f6b;--line:#e4e5e9;--accent:#fe2c55;--accent2:#25f4ee;--ok:#117a4d;--warn:#8a5a00;--warnbg:#fff4d6;--btn:#161823;--btntext:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#121318;--card:#1b1d25;--text:#f1f1f3;--muted:#a3a7b3;--line:#2c2f3a;--accent:#ff4d73;--ok:#4cd694;--warn:#f1c66a;--warnbg:#3a2f12;--btn:#f1f1f3;--btntext:#121318}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.7rem;margin:.2em 0 .1em}
+h2{font-size:1.15rem;margin:0 0 .5em}
+p{margin:.4em 0}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.bar{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));margin-bottom:14px}
+ol{padding-left:1.2em;margin:.3em 0}
+li{margin:.25em 0}
+button,.btn{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 12px;text-decoration:none;display:inline-block}
+button.primary,.btn.primary{background:var(--btn);color:var(--btntext);border-color:var(--btn)}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.drop:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:22px;text-align:center;cursor:pointer}
+.drop.over{border-color:var(--accent);background:rgba(254,44,85,.06)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:1.5rem}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tabs button[aria-pressed=true]{background:var(--btn);color:var(--btntext);border-color:var(--btn)}
+input[type=search],select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+input[type=search]{flex:1;min-width:160px}
+.notice{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;margin:10px 0}
+.progress{font-weight:600;margin:10px 0}
+ul.list{list-style:none;padding:0;margin:8px 0}
+ul.list li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 4px;border-bottom:1px solid var(--line)}
+ul.list .who{min-width:0;overflow-wrap:anywhere}
+ul.list .who small{display:block;color:var(--muted)}
+ul.list li.done .who strong{text-decoration:line-through;color:var(--muted)}
+ul.list li.aside{opacity:.6}
+.actions{display:flex;gap:6px;flex-shrink:0}
+.confirm{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;margin:8px 0}
+details summary{cursor:pointer;font-weight:600}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--line)}
+footer{margin-top:28px;font-size:.92rem;color:var(--muted)}
+footer a{color:inherit}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="bar"></div>
+<h1>TikTok Unfollow Check</h1>
+<p class="muted">See who you follow that does not follow you back. You use your own TikTok data file. No password, no login, and your file never leaves your device.</p>
+
+<section class="card" id="how">
+<h2>1. Get your data from TikTok</h2>
+<ol>
+<li>In the TikTok app: Profile → menu (☰) → <b>Settings and privacy</b> → <b>Account</b> → <b>Download your data</b>.</li>
+<li>Choose <b>Select data to download</b> (or "custom") and tick the <b>followers</b> and <b>following</b> lists. Choose the <b>JSON</b> file format.</li>
+<li>Tap <b>Request data</b>. TikTok prepares it in the background; it can take from a few hours to a few days.</li>
+<li>When it is ready, go back to the same screen, tap <b>Download</b>, and save the file (a zip).</li>
+</ol>
+<p class="muted">The download link expires after a few days. Use a computer or phone browser to upload the file below. You can upload the zip as it is, or the unzipped <code>user_data.json</code> / text files.</p>
+</section>
+
+<section class="card" id="upload">
+<h2>2. Upload it here</h2>
+<div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose your TikTok data file">
+<p><b>Drop your file here</b> or tap to choose it</p>
+<p class="muted">.zip, .json or .txt</p>
+</div>
+<input type="file" id="file" class="hidden" multiple accept=".zip,.json,.txt,application/json,application/zip,text/plain">
+<div class="row" style="margin-top:10px">
+<button id="example" type="button">Try with example data</button>
+<button id="startover" type="button" class="hidden">Start over</button>
+</div>
+<div id="msg" class="notice hidden" role="status"></div>
+</section>
+
+<section id="results" class="hidden" aria-live="polite">
+<div class="stats" id="stats"></div>
+<div id="capnote" class="notice hidden">TikTok seems to cut the follower list in its export at about 10,000 accounts. If you have more followers than that, some people shown as "not following back" may actually follow you.</div>
+<div class="card">
+<div class="tabs" role="group" aria-label="Lists">
+<button type="button" data-tab="notBack" aria-pressed="true">Not following back</button>
+<button type="button" data-tab="mutuals" aria-pressed="false">Mutuals</button>
+<button type="button" data-tab="fans" aria-pressed="false">Fans (you do not follow)</button>
+</div>
+<div class="row">
+<input type="search" id="q" placeholder="Search a username" aria-label="Search a username">
+<select id="age" class="hidden" aria-label="Followed how long ago">
+<option value="0">Followed any time ago</option>
+<option value="1">Followed over 1 month ago</option>
+<option value="3">Followed over 3 months ago</option>
+<option value="6">Followed over 6 months ago</option>
+<option value="12">Followed over 1 year ago</option>
+</select>
+<button type="button" id="csv">Download CSV</button>
+</div>
+<div class="progress" id="progress"></div>
+<div class="row"><button type="button" id="reset">Reset progress</button></div>
+<div id="resetconfirm" class="confirm hidden">
+<p>This deletes the list of profiles you opened from this browser. It cannot be undone.</p>
+<div class="row"><button type="button" id="resetyes" class="primary">Yes, reset</button><button type="button" id="resetno">Cancel</button></div>
+</div>
+<ul class="list" id="list"></ul>
+<div class="row"><button type="button" id="more" class="hidden">Show more</button></div>
+<p class="muted" id="hint"></p>
+</div>
+
+<details class="card" id="files">
+<summary>Your files (check that everything was read)</summary>
+<div id="filesinfo"></div>
+<div class="row" style="margin-top:8px"><button type="button" id="copydetails">Copy details for my message</button><span id="copied" class="muted"></span></div>
+<p class="muted">The copied text has counts, file and section names, and your browser. It has no usernames.</p>
+</details>
+</section>
+
+<section class="card" id="privacy">
+<h2>Privacy</h2>
+<p class="muted">Last updated 27 October 2026.</p>
+<ul>
+<li><b>Your file stays on your device.</b> The page reads it in your browser. Nothing is uploaded to a server.</li>
+<li><b>What is read:</b> the usernames (and the follow dates, if present) in your followers and following lists. Nothing else in the file is used.</li>
+<li><b>What is stored:</b> the page keeps a list of the profiles you opened or set aside, with the time, in your browser only. It is never sent anywhere. "Reset progress" deletes it, and so does clearing the site data of your browser. It is not shared between your phone and your computer.</li>
+<li><b>Visit counting:</b> <!--PRIVACY_ANALYTICS-->no visit counter is used yet. When one is added, this line will name it and say what it counts.</li>
+<li><b>Outside links:</b> TikTok profiles, the follow links to X and TikTok, the other tools listed below and the page that hosts this site are outside this page. Their own policies apply.</li>
+<li><b>Children:</b> this tool is not made for children under 13.</li>
+<li><b>Contact:</b> <a href="https://x.com/katerinaramm1" target="_blank" rel="noopener">@katerinaramm1</a> on X.</li>
+</ul>
+</section>
+
+<section class="card" id="follow">
+<h2>Enjoyed this tool?</h2>
+<p class="muted">It is free. A follow helps me keep making more of them.</p>
+<div class="row">
+<a class="btn primary" href="https://x.com/katerinaramm1" target="_blank" rel="noopener">Follow @katerinaramm1 on X</a>
+<a class="btn primary" href="https://www.tiktok.com/@katycrete" target="_blank" rel="noopener">Follow @katycrete on TikTok</a>
+</div>
+</section>
+
+<footer>
+<p><b>More tools</b> (open in a new tab):
+<a href="https://katerinaramm1.github.io/insta-unfollow/" target="_blank" rel="noopener">Instagram unfollow</a> ·
+<a href="https://katerinaramm1.github.io/x-unfollow/" target="_blank" rel="noopener">X unfollow</a> ·
+<a href="https://katerinaramm1.github.io/linkedin-unfollow/" target="_blank" rel="noopener">LinkedIn connection check</a></p>
+<p>Created by <a href="https://x.com/katerinaramm1" target="_blank" rel="noopener">@katerinaramm1</a> with the help of Claude. <a href="#privacy">Privacy</a></p>
+<p>Not affiliated with TikTok or ByteDance. TikTok is a trademark of its owner.</p>
+</footer>
+</div>
+<script>/* TikTok unfollow checker: logic only (no DOM). Works in the browser and in Node for tests.
+   Everything here is tolerant on purpose: the real export format has not been checked yet. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.TTCore = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var USER_KEYS = ['username', 'user_name', 'uniqueid', 'unique_id', 'handle', 'userhandle', 'user'];
+  var DATE_KEYS = ['date', 'followdate', 'followedat', 'createtime', 'time', 'timestamp'];
+  var MIN_YEAR = 2010;
+
+  function normKey(k) { return String(k).toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  function cleanUser(s) { return String(s).trim().replace(/^@+/, ''); }
+  function lower(s) { return String(s).toLowerCase(); }
+
+  function parseDate(v) {
+    if (v === null || v === undefined || v === '') return null;
+    var t = null;
+    if (typeof v === 'number') {
+      t = v < 1e11 ? v * 1000 : v;
+    } else {
+      var s = String(v).trim();
+      if (/^\d{9,13}$/.test(s)) return parseDate(Number(s));
+      var m = s.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);
+      if (m) t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+      else {
+        m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (m) t = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+        else t = Date.parse(s);
+      }
+    }
+    if (t === null || isNaN(t)) return null;
+    var y = new Date(t).getUTCFullYear();
+    if (y < MIN_YEAR || y > 2100) return null;
+    return t;
+  }
+
+  // 'following', 'followers' or null for one key name
+  function classifyKey(k) {
+    var n = normKey(k);
+    var ing = n.indexOf('following') !== -1;
+    var er = /follower|fans/.test(n);
+    if (ing && er) return null; // e.g. "Followers and Following": ambiguous, look higher up
+    if (ing) return 'following';
+    if (er) return 'followers';
+    return null;
+  }
+
+  function classifyPath(path) {
+    for (var i = path.length - 1; i >= 0; i--) {
+      if (typeof path[i] !== 'string') continue;
+      var c = classifyKey(path[i]);
+      if (c) return c;
+    }
+    return null;
+  }
+
+  function extractEntry(item, allowString) {
+    if (typeof item === 'string') return allowString && item.trim() ? { user: cleanUser(item), date: null } : null;
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+    var user = null, date = null, keys = Object.keys(item);
+    for (var i = 0; i < keys.length; i++) {
+      var nk = normKey(keys[i]), v = item[keys[i]];
+      if (user === null && USER_KEYS.indexOf(nk) !== -1 && typeof v === 'string' && v.trim()) user = cleanUser(v);
+      if (date === null && DATE_KEYS.indexOf(nk) !== -1) date = parseDate(v);
+    }
+    return user ? { user: user, date: date } : null;
+  }
+
+  function parseJSONData(data) {
+    var out = { followers: [], following: [], paths: { followers: [], following: [] } };
+    function walk(node, path) {
+      if (Array.isArray(node)) {
+        var kind = classifyPath(path);
+        var entries = [];
+        for (var i = 0; i < node.length; i++) {
+          var e = extractEntry(node[i], !!kind);
+          if (e) entries.push(e);
+        }
+        if (kind && entries.length) {
+          out[kind] = out[kind].concat(entries);
+          out.paths[kind].push(path.filter(function (p) { return typeof p === 'string'; }).join(' > '));
+          return;
+        }
+        for (var j = 0; j < node.length; j++) {
+          if (node[j] && typeof node[j] === 'object') walk(node[j], path.concat(j));
+        }
+      } else if (node && typeof node === 'object') {
+        Object.keys(node).forEach(function (k) { walk(node[k], path.concat(k)); });
+      }
+    }
+    walk(data, []);
+    return out;
+  }
+
+  var HEADER_RE = /^(following|following list|follower|followers|follower list|fans|fans list|fans and followers)\s*:?\s*$/i;
+
+  function parseText(text) {
+    var out = { followers: [], following: [], paths: { followers: [], following: [] } };
+    var lines = String(text).split(/\r?\n/);
+    var section = null, cur = {};
+    function flush() {
+      if (section && cur.user) out[section].push({ user: cleanUser(cur.user), date: cur.date || null });
+      cur = {};
+    }
+    lines.forEach(function (raw) {
+      var line = raw.trim();
+      if (!line) { flush(); return; }
+      var h = line.match(HEADER_RE);
+      if (h) {
+        flush();
+        section = classifyKey(h[1]);
+        if (section && out.paths[section].indexOf('(text file)') === -1) out.paths[section].push('(text file)');
+        return;
+      }
+      var kv = line.match(/^([^:]+):\s*(.*)$/);
+      if (!kv) return;
+      var nk = normKey(kv[1]);
+      if (DATE_KEYS.indexOf(nk) !== -1) { if (cur.user || cur.date) flush(); cur.date = parseDate(kv[2]); }
+      else if (USER_KEYS.indexOf(nk) !== -1) { if (cur.user) flush(); cur.user = kv[2]; }
+    });
+    flush();
+    return out;
+  }
+
+  function parseAny(text) {
+    var t = String(text).replace(/^\uFEFF/, '').trim();
+    if (t.charAt(0) === '{' || t.charAt(0) === '[') {
+      try { return parseJSONData(JSON.parse(t)); } catch (e) { /* fall through to text */ }
+    }
+    return parseText(t);
+  }
+
+  function dedupe(list) {
+    var map = Object.create(null), order = [];
+    list.forEach(function (e) {
+      var k = lower(e.user);
+      if (!map[k]) { map[k] = { user: e.user, date: e.date }; order.push(k); }
+      else if (map[k].date === null && e.date !== null) map[k].date = e.date;
+    });
+    return order.map(function (k) { return map[k]; });
+  }
+
+  // texts: array of file contents
+  function analyze(texts) {
+    var parsed = { followers: [], following: [], paths: { followers: [], following: [] } };
+    texts.forEach(function (t) {
+      var p = parseAny(t);
+      parsed.followers = parsed.followers.concat(p.followers);
+      parsed.following = parsed.following.concat(p.following);
+      parsed.paths.followers = parsed.paths.followers.concat(p.paths.followers);
+      parsed.paths.following = parsed.paths.following.concat(p.paths.following);
+    });
+    return compute(dedupe(parsed.followers), dedupe(parsed.following), parsed.paths);
+  }
+
+  function byDateThenName(a, b) {
+    if (a.date !== null && b.date !== null && a.date !== b.date) return a.date - b.date;
+    if (a.date === null && b.date !== null) return 1;
+    if (a.date !== null && b.date === null) return -1;
+    return lower(a.user) < lower(b.user) ? -1 : lower(a.user) > lower(b.user) ? 1 : 0;
+  }
+
+  function compute(followers, following, paths) {
+    var fset = Object.create(null), gset = Object.create(null);
+    followers.forEach(function (e) { fset[lower(e.user)] = true; });
+    following.forEach(function (e) { gset[lower(e.user)] = true; });
+    var notBack = following.filter(function (e) { return !fset[lower(e.user)]; }).sort(byDateThenName);
+    var mutuals = following.filter(function (e) { return fset[lower(e.user)]; }).sort(byDateThenName);
+    var fans = followers.filter(function (e) { return !gset[lower(e.user)]; }).sort(byDateThenName);
+    var withDates = following.filter(function (e) { return e.date !== null; }).length;
+    return {
+      followers: followers, following: following,
+      notBack: notBack, mutuals: mutuals, fans: fans,
+      rate: following.length ? mutuals.length / following.length : 0,
+      // the export is said to cut the follower list at about 10,000 (third-party reports, not checked)
+      capped: followers.length >= 9900 && followers.length <= 10000,
+      datesFound: following.length ? withDates / following.length : 0,
+      paths: paths || { followers: [], following: [] },
+      problem: (!followers.length && !following.length) ? 'none'
+        : !following.length ? 'no-following' : !followers.length ? 'no-followers' : null
+    };
+  }
+
+  // ----- progress (opened / set aside), keyed by lower-case username -----
+  function dayKey(ts) {
+    var d = new Date(ts);
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+  function progressStats(state, list, nowTs, batch) {
+    var opened = state.opened || {}, aside = state.aside || {};
+    var today = dayKey(nowTs), todayCount = 0, openedCount = 0, asideCount = 0, remaining = 0;
+    Object.keys(opened).forEach(function (k) { if (dayKey(opened[k]) === today) todayCount++; });
+    list.forEach(function (e) {
+      var k = lower(e.user);
+      if (opened[k]) openedCount++;
+      else if (aside[k]) asideCount++;
+      else remaining++;
+    });
+    return { opened: openedCount, today: todayCount, aside: asideCount, remaining: remaining,
+             batches: Math.ceil(remaining / batch) };
+  }
+  function progressLine(s, fmt) {
+    fmt = fmt || function (n) { return String(n); };
+    var b = s.batches;
+    return fmt(s.opened) + ' opened · ' + fmt(s.today) + ' today · ' + fmt(s.aside) + ' set aside · ' +
+      (b === 0 ? 'all done' : 'about ' + fmt(b) + ' batch' + (b === 1 ? '' : 'es') + ' to go');
+  }
+
+  // ----- CSV -----
+  function csvCell(v) {
+    var s = v === null || v === undefined ? '' : String(v);
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    if (/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+  function toCSV(list) {
+    var rows = ['Username,Profile link,Followed on'];
+    list.forEach(function (e) {
+      rows.push([e.user, 'https://www.tiktok.com/@' + e.user,
+        e.date === null ? '' : new Date(e.date).toISOString().slice(0, 10)].map(csvCell).join(','));
+    });
+    return '\uFEFF' + rows.join('\r\n');
+  }
+
+  function profileUrl(user) { return 'https://www.tiktok.com/@' + encodeURIComponent(user); }
+
+  function monthsAgo(ts, nowTs) { return (nowTs - ts) / (30.4375 * 24 * 3600 * 1000); }
+
+  return {
+    parseAny: parseAny, parseDate: parseDate, analyze: analyze, compute: compute,
+    progressStats: progressStats, progressLine: progressLine, dayKey: dayKey,
+    toCSV: toCSV, csvCell: csvCell, profileUrl: profileUrl, monthsAgo: monthsAgo, lower: lower
+  };
+});
+</script>
+<script>(function () {
+  'use strict';
+  var C = window.TTCore;
+  var BATCH = 100; // profiles per batch: check the Instagram tool's value so the tools match
+  var PAGE = 200;  // rows shown at a time
+  var STORE_KEY = 'tt-unfollow-progress-v1';
+  var JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(n) { try { return n.toLocaleString(); } catch (e) { return String(n); } }
+
+  // ---------- storage that never breaks the page ----------
+  var storageBlocked = false; // set when the browser refuses storage
+  var isExample = false;      // example data never touches storage
+  function loadState() {
+    if (isExample || storageBlocked) return { opened: {}, aside: {} };
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && typeof s === 'object') { s.opened = s.opened || {}; s.aside = s.aside || {}; return s; }
+      }
+    } catch (e) { storageBlocked = true; }
+    return { opened: {}, aside: {} };
+  }
+  var state = { opened: {}, aside: {} };
+  function saveState() {
+    if (isExample || storageBlocked) return; // progress then lives in memory only, for this visit
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+    catch (e) { storageBlocked = true; }
+  }
+
+  // ---------- app state ----------
+  var R = null;            // analysis result
+  var files = [];          // {name, kind}
+  var tab = 'notBack';
+  var shown = PAGE;
+
+  function showMsg(text, isError) {
+    var m = $('msg');
+    if (!text) { m.classList.add('hidden'); m.textContent = ''; return; }
+    m.textContent = text; m.classList.remove('hidden');
+  }
+
+  // ---------- reading files ----------
+  function readText(file) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { resolve(String(fr.result)); };
+      fr.onerror = function () { reject(fr.error || new Error('read failed')); };
+      fr.readAsText(file);
+    });
+  }
+  function loadJSZip() {
+    if (window.JSZip) return Promise.resolve(window.JSZip);
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = JSZIP_URL;
+      s.onload = function () { window.JSZip ? resolve(window.JSZip) : reject(new Error('zip library missing')); };
+      s.onerror = function () { reject(new Error('zip library blocked')); };
+      document.head.appendChild(s);
+    });
+  }
+  function readZip(file) {
+    return loadJSZip().then(function (JSZip) {
+      return file.arrayBuffer().then(function (buf) { return JSZip.loadAsync(buf); });
+    }).then(function (zip) {
+      var jobs = [];
+      zip.forEach(function (path, entry) {
+        if (entry.dir) return;
+        if (/\.(json|txt)$/i.test(path)) {
+          jobs.push(entry.async('string').then(function (t) { return { name: file.name + ' > ' + path, text: t }; }));
+        }
+      });
+      return Promise.all(jobs);
+    });
+  }
+
+  function handleFiles(list) {
+    showMsg('');
+    var arr = Array.prototype.slice.call(list || []);
+    if (!arr.length) return;
+    var texts = [], infos = [];
+    var chain = Promise.resolve();
+    arr.forEach(function (f) {
+      chain = chain.then(function () {
+        if (/\.zip$/i.test(f.name)) {
+          return readZip(f).then(function (items) {
+            if (!items.length) infos.push({ name: f.name, note: 'zip has no .json or .txt files' });
+            items.forEach(function (it) { texts.push(it.text); infos.push({ name: it.name, note: '' }); });
+          });
+        }
+        return readText(f).then(function (t) { texts.push(t); infos.push({ name: f.name, note: '' }); });
+      });
+    });
+    chain.then(function () {
+      var res = C.analyze(texts);
+      if (res.problem === 'none') {
+        showMsg('I could not find followers or following lists in this file. Check that you asked TikTok for the followers and following lists in JSON format. Open "Your files" below after choosing a file to see what was read.');
+        if (infos.length) { R = res; files = infos; isExample = false; renderFilesOnly(); }
+        return;
+      }
+      start(res, infos, false);
+      if (res.problem === 'no-following') showMsg('Only the followers list was found. Add the file with your following list to see who does not follow you back.');
+      if (res.problem === 'no-followers') showMsg('Only the following list was found. Add the file with your followers list to see who does not follow you back.');
+    }).catch(function (e) {
+      var blocked = e && /zip library/.test(e.message || '');
+      showMsg(blocked
+        ? 'The zip reader could not load (it may be blocked). Unzip the file on your device and choose user_data.json instead.'
+        : 'This file could not be read. Try the unzipped user_data.json file.');
+    });
+  }
+
+  function start(res, infos, example) {
+    R = res; files = infos; isExample = example; tab = 'notBack'; shown = PAGE;
+    state = loadState();
+    $('q').value = ''; $('age').value = '0';
+    $('results').classList.remove('hidden');
+    $('startover').classList.remove('hidden');
+    render();
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderFilesOnly() {
+    $('results').classList.remove('hidden');
+    $('stats').textContent = '';
+    $('list').textContent = '';
+    renderFiles();
+  }
+
+  // ---------- rendering ----------
+  function renderStats() {
+    var box = $('stats'); box.textContent = '';
+    var items = [
+      ['Following', fmt(R.following.length)],
+      ['Followers', fmt(R.followers.length)],
+      ['Follow-back rate', R.following.length ? Math.round(R.rate * 100) + '%' : '–'],
+      ['Not following back', fmt(R.notBack.length)]
+    ];
+    items.forEach(function (it) {
+      var d = document.createElement('div'); d.className = 'stat';
+      var b = document.createElement('b'); b.textContent = it[1];
+      d.appendChild(b); d.appendChild(document.createTextNode(it[0]));
+      box.appendChild(d);
+    });
+  }
+
+  function currentList() {
+    var list = R[tab] || [];
+    var q = $('q').value.trim().toLowerCase();
+    var months = parseInt($('age').value, 10) || 0;
+    var now = Date.now();
+    return list.filter(function (e) {
+      if (q && e.user.toLowerCase().indexOf(q) === -1) return false;
+      if (months && tab !== 'fans') { if (e.date === null || C.monthsAgo(e.date, now) < months) return false; }
+      return true;
+    });
+  }
+
+  function renderProgress() {
+    var s = C.progressStats(state, R.notBack, Date.now(), BATCH);
+    $('progress').textContent = C.progressLine(s, fmt);
+  }
+
+  function makeRow(e) {
+    var key = C.lower(e.user);
+    var li = document.createElement('li');
+    var who = document.createElement('div'); who.className = 'who';
+    var strong = document.createElement('strong'); strong.textContent = '@' + e.user;
+    who.appendChild(strong);
+    if (e.date !== null) {
+      var sm = document.createElement('small');
+      sm.textContent = 'Followed ' + new Date(e.date).toLocaleDateString();
+      who.appendChild(sm);
+    }
+    li.appendChild(who);
+    var acts = document.createElement('div'); acts.className = 'actions';
+    var a = document.createElement('a');
+    a.className = 'btn primary'; a.textContent = 'Open profile';
+    a.href = C.profileUrl(e.user); a.target = '_blank'; a.rel = 'noopener noreferrer';
+    acts.appendChild(a);
+    function paint() {
+      li.className = state.opened[key] ? 'done' : (state.aside[key] ? 'aside' : '');
+    }
+    a.addEventListener('click', function () {
+      if (tab === 'notBack' && !state.opened[key]) {
+        state.opened[key] = Date.now(); delete state.aside[key];
+        saveState(); paint(); renderProgress();
+      }
+    });
+    if (tab === 'notBack') {
+      var b = document.createElement('button'); b.type = 'button';
+      function label() { b.textContent = state.aside[key] ? 'Undo' : 'Set aside'; }
+      b.addEventListener('click', function () {
+        if (state.aside[key]) delete state.aside[key]; else { state.aside[key] = Date.now(); delete state.opened[key]; }
+        saveState(); label(); paint(); renderProgress();
+      });
+      label(); acts.appendChild(b);
+    }
+    li.appendChild(acts);
+    paint();
+    return li;
+  }
+
+  function renderList() {
+    var list = currentList();
+    var ul = $('list'); ul.textContent = '';
+    list.slice(0, shown).forEach(function (e) { ul.appendChild(makeRow(e)); });
+    $('more').classList.toggle('hidden', list.length <= shown);
+    var hint = $('hint');
+    if (!list.length) hint.textContent = 'Nothing to show here.';
+    else hint.textContent = 'Showing ' + fmt(Math.min(shown, list.length)) + ' of ' + fmt(list.length) + '. ' +
+      (tab === 'notBack' ? 'Open a profile, then unfollow in TikTok. Opened profiles are crossed out and remembered in this browser.' : '');
+    $('progress').classList.toggle('hidden', tab !== 'notBack');
+    $('reset').classList.toggle('hidden', tab !== 'notBack');
+  }
+
+  function renderFiles() {
+    var box = $('filesinfo'); box.textContent = '';
+    var ul = document.createElement('ul');
+    files.forEach(function (f) {
+      var li = document.createElement('li'); li.textContent = f.name + (f.note ? ' (' + f.note + ')' : ''); ul.appendChild(li);
+    });
+    box.appendChild(ul);
+    var p = document.createElement('p');
+    var fp = (R.paths.followers.length ? R.paths.followers.join(', ') : 'not found');
+    var gp = (R.paths.following.length ? R.paths.following.join(', ') : 'not found');
+    p.textContent = 'Followers read from: ' + fp + '. Following read from: ' + gp + '. Follow dates found for ' +
+      Math.round(R.datesFound * 100) + '% of the people you follow.';
+    box.appendChild(p);
+  }
+
+  function render() {
+    renderStats();
+    $('capnote').classList.toggle('hidden', !R.capped);
+    $('age').classList.toggle('hidden', R.datesFound === 0);
+    var btns = document.querySelectorAll('.tabs button');
+    Array.prototype.forEach.call(btns, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-tab') === tab ? 'true' : 'false'); });
+    renderProgress();
+    renderList();
+    renderFiles();
+  }
+
+  // ---------- events ----------
+  var drop = $('drop'), fileInput = $('file');
+  drop.addEventListener('click', function () { fileInput.click(); });
+  drop.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+  fileInput.addEventListener('change', function () { handleFiles(fileInput.files); fileInput.value = ''; });
+  ['dragenter', 'dragover'].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { handleFiles(e.dataTransfer && e.dataTransfer.files); });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function (b) {
+    b.addEventListener('click', function () { tab = b.getAttribute('data-tab'); shown = PAGE; render(); });
+  });
+  $('q').addEventListener('input', function () { shown = PAGE; renderList(); });
+  $('age').addEventListener('change', function () { shown = PAGE; renderList(); });
+  $('more').addEventListener('click', function () { shown += PAGE; renderList(); });
+
+  $('csv').addEventListener('click', function () {
+    var blob = new Blob([C.toCSV(currentList())], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'tiktok-' + tab + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  });
+
+  $('reset').addEventListener('click', function () { $('resetconfirm').classList.remove('hidden'); $('resetyes').focus(); });
+  $('resetno').addEventListener('click', function () { $('resetconfirm').classList.add('hidden'); });
+  $('resetyes').addEventListener('click', function () {
+    state = { opened: {}, aside: {} };
+    if (!isExample) { try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ } }
+    $('resetconfirm').classList.add('hidden');
+    render();
+  });
+
+  $('startover').addEventListener('click', function () {
+    R = null; files = []; isExample = false;
+    $('results').classList.add('hidden'); $('startover').classList.add('hidden'); showMsg('');
+  });
+
+  // ---------- example data (made up) ----------
+  $('example').addEventListener('click', function () {
+    var now = Date.now(), day = 24 * 3600 * 1000, i;
+    var following = [], followers = [];
+    for (i = 1; i <= 40; i++) following.push({ Date: new Date(now - (i * 17) * day).toISOString().replace('T', ' ').slice(0, 19), UserName: 'example_account_' + i });
+    for (i = 1; i <= 40; i += 2) followers.push({ Date: new Date(now - (i * 9) * day).toISOString().replace('T', ' ').slice(0, 19), UserName: 'example_account_' + i });
+    for (i = 1; i <= 8; i++) followers.push({ Date: new Date(now - (i * 5) * day).toISOString().replace('T', ' ').slice(0, 19), UserName: 'example_fan_' + i });
+    var json = JSON.stringify({ Activity: { 'Follower List': { FansList: followers }, 'Following List': { Following: following } } });
+    start(C.analyze([json]), [{ name: 'Example data (made up)', note: '' }], true);
+    showMsg('This is made-up example data. Progress on it is not saved.');
+  });
+
+  // ---------- details for a feedback message (no usernames) ----------
+  $('copydetails').addEventListener('click', function () {
+    if (!R) return;
+    var lines = [
+      'TikTok Unfollow Check details',
+      'Following: ' + R.following.length + ', followers: ' + R.followers.length,
+      'Not following back: ' + R.notBack.length + ', mutuals: ' + R.mutuals.length + ', fans: ' + R.fans.length,
+      'Follow dates found: ' + Math.round(R.datesFound * 100) + '%',
+      'Followers read from: ' + (R.paths.followers.join(', ') || 'not found'),
+      'Following read from: ' + (R.paths.following.join(', ') || 'not found'),
+      'Files: ' + files.map(function (f) { return f.name; }).join('; '),
+      'Cap warning shown: ' + (R.capped ? 'yes' : 'no'),
+      'Example data: ' + (isExample ? 'yes' : 'no'),
+      'Browser: ' + navigator.userAgent
+    ].join('\n');
+    function done(ok) { $('copied').textContent = ok ? 'Copied.' : 'Could not copy. Select and copy the text below.'; if (!ok) showFallback(lines); }
+    function showFallback(t) {
+      var pre = document.getElementById('detailspre');
+      if (!pre) { pre = document.createElement('pre'); pre.id = 'detailspre'; $('files').appendChild(pre); }
+      pre.textContent = t;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lines).then(function () { done(true); }, function () { done(false); });
+    } else done(false);
+  });
+})();
+</script>
+</body>
+</html>
